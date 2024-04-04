@@ -1,0 +1,18 @@
+{
+  "name": "fakeapi",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch index.js",
+    "dev:debug": "node --watch --inspect index.js",
+    "test": "node --test test/",
+    "test:coverage": "node --test --experimental-test-coverage test/",
+    "test:debug": "node --inspect --watch --test test/"
+  },
+  "dependencies": {
+    "@faker-js/faker": "^8.4.1",
+    "express": "^4.18.3"
+  }
+}
