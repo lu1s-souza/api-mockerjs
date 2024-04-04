@@ -1,25 +1,10 @@
-import { createServer as _createServer } from 'http';
+import { Server, createServer as _createServer } from 'http';
 import { readFileSync, readdir } from 'fs';
 // ESM
-import { faker } from '@faker-js/faker';
-import { Parser } from './lib/interface-parser/parser.js';
+import { Parser } from './lib/parser.ts';
 
-function createRandomUser(objKeys) {
-  const returnedObj = {
 
-  }
-
-  objKeys.forEach((v) => {
-    if (v.includes("id")) returnedObj[v] = faker.string.uuid();
-    if (v === "firstName") returnedObj[v] = faker.person.firstName();
-    if (v === "lastName") returnedObj[v] = faker.person.lastName();
-    if (v === "createdTimestamp") returnedObj[v] = faker.date.past().getTime();
-    if (v === "username") returnedObj[v] = faker.internet.userName();
-    if (v === "email") returnedObj[v] = faker.internet.email();
-  })
-  return returnedObj;
-}
-function createServer(endpoints) {
+function createServer(endpoints: string[]) {
   return _createServer((req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*'); /* @dev First, read about security */
     res.setHeader('Access-Control-Allow-Methods', '*');
@@ -31,7 +16,7 @@ function createServer(endpoints) {
     let json = JSON.stringify({
       err: 'Endpoint not found'
     });
-    const endpoint = req.url.replace(/(^\/)|(([a-z]+)[A-Z]*\/([a-z][0-9]\/)?)/g, '').replace('v1/', '')
+    const endpoint = req.url?.replace(/(^\/)|(([a-z]+)[A-Z]*\/([a-z][0-9]\/)?)/g, '').replace('v1/', '')
     const endpointFile = endpoints.find((_endpoint) => _endpoint === endpoint);
     // console.log('endpoint', endpointFile);
     // console.log('endpoint', endpoints);
@@ -46,7 +31,7 @@ function createServer(endpoints) {
       json = readFileSync(`${process.cwd()}/endpoints/${endpointFile}.json`, 'utf-8');
       switch (endpoint) {
         case 'getListTasks':
-          new Promise((resolve, reject) => {
+          new Promise<any>((resolve, reject) => {
             let body = "";
 
             req.on("data", (chunk) => {
@@ -72,10 +57,10 @@ function createServer(endpoints) {
 
         case 'listUsers':
           const p = new Parser('/Users/luissouza/projects/servidor-de-terminologias/pt.spms.fe/src/app/common/interfaces');
-          p.parseInterfaces();
+          p.getFilesInPath()
+            .then(() => { p.loadInterfacesOnFile(); res.end(json) });
           // const tempJson = JSON.parse(json);
           // tempJson.values = resultArray;
-          res.end(json);
           break
 
         default:
@@ -92,9 +77,9 @@ function createServer(endpoints) {
   })
 }
 
-new Promise((resolve, reject) => {
+new Promise<Server>((resolve, reject) => {
   readdir(process.cwd() + "/endpoints", (err, files) => {
     if (err) reject(err);
     resolve(createServer(files.map((f) => f.split(/\./)[0])));
   })
-}).then((server) => server.listen(8000));
+}).then((server: Server) => server.listen(8000));

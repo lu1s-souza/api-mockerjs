@@ -1,18 +1,21 @@
 {
   "name": "fakeapi",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "index.ts",
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "dev": "node --watch index.js",
-    "dev:debug": "node --watch --inspect index.js",
-    "test": "node --test test/",
-    "test:coverage": "node --test --experimental-test-coverage test/",
-    "test:debug": "node --inspect --watch --test test/"
+    "test:debug": "node --inspect --watch --test test/",
+    "dev": "npx tsx watch index.ts",
+    "build": "npx tsup ./",
+    "start": "node dist/index.js"
   },
   "dependencies": {
     "@faker-js/faker": "^8.4.1",
     "express": "^4.18.3"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.4",
+    "typescript": "^5.4.3"
   }
 }
