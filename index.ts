@@ -55,14 +55,6 @@ function createServer(endpoints: string[]) {
           });
           break;
 
-        case 'listUsers':
-          const p = new Parser('/Users/luissouza/projects/servidor-de-terminologias/pt.spms.fe/src/app/common/interfaces');
-          p.getFilesInPath()
-            .then(() => { p.loadInterfacesOnFile(); res.end(json) });
-          // const tempJson = JSON.parse(json);
-          // tempJson.values = resultArray;
-          break
-
         default:
           res.end(json);
           break;
